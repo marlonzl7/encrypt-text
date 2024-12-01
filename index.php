@@ -1,3 +1,32 @@
+<?php
+
+function criptografarTexto($texto, $chave, $iv) {
+    return openssl_encrypt($texto, 'aes-256-cbc', $chave, 0, $iv);
+}
+
+function descriptografarTexto($textoCriptografado, $chave, $iv) {
+    return openssl_decrypt($textoCriptografado, 'aes-256-cbc', $chave, 0, $iv);
+}
+
+// Verifica se o formulário foi enviado
+$texto = $_POST['entrada'] ?? '';
+$acao = $_POST['acao'] ?? '';
+$textoResultado = '';
+$chave = 'minha-chave-secreta-32-chars!'; // Chave de 32 caracteres para AES-256
+$iv = '1234567890123456'; // Vetor de inicialização (16 caracteres)
+
+if (!empty($texto)) {
+    try {
+        if ($acao === 'criptografar') {
+            $textoResultado = criptografarTexto($texto, $chave, $iv);
+        } elseif ($acao === 'descriptografar') {
+            $textoResultado = descriptografarTexto($texto, $chave, $iv);
+        }
+    } catch (Exception $e) {
+        $textoResultado = "Erro: " . $e->getMessage();
+    }
+}
+?>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
